@@ -1,1 +1,87 @@
-
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101923">
+<title>铜价行情看板</title>
+<style>
+:root{color-scheme:dark;--bg:#0b121a;--panel:#121e29;--line:#263747;--muted:#91a4b5;--text:#edf4fa;--green:#35d39a;--red:#ff7272;--gold:#e9bd62}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px 18px 16px;background:#101923;border-bottom:1px solid var(--line)}
+h1{font-size:23px;margin:0 0 7px} .sub{color:var(--muted);font-size:12px}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+.status{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:4px 0 16px;color:var(--muted);font-size:12px}
+.pill{border:1px solid var(--line);border-radius:20px;padding:6px 10px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-right:6px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;min-width:0}
+.card h2{font-size:13px;color:var(--muted);font-weight:500;margin:0 0 13px}
+.price{font-size:25px;font-weight:700;letter-spacing:-.5px;min-height:32px}
+.unit{font-size:12px;color:var(--muted);margin-top:5px}
+.na{color:#d7b66f;font-size:15px;font-weight:600}
+.wide{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:10px 5px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:500}
+input{width:100%;background:#0b141d;border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);font-size:15px}
+label{display:block;color:var(--muted);font-size:12px;margin:9px 0 5px}
+button{background:#1d765d;border:0;border-radius:8px;color:white;padding:11px 14px;font-weight:600;margin-top:12px}
+.note{color:var(--muted);font-size:12px;line-height:1.65}
+footer{padding:20px 3px;color:var(--muted);font-size:11px;line-height:1.7}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.wide{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<header><div class="wrap" style="padding:0 16px">
+<h1>铜价行情看板</h1>
+<div class="sub">LME 伦敦金属交易所 · 上海有色 / 沪铜 · 美元与人民币</div>
+</div></header>
+<main class="wrap">
+<div class="status">
+<span class="pill"><span class="dot"></span>行情数据源：尚未接入</span>
+<span class="pill">页面检查间隔：5分钟</span>
+<span class="pill" id="clock">本机时间：--</span>
+</div>
+<div class="grid">
+<section class="card"><h2>LME 铜现货（Cash）</h2><div class="na">等待接入行情源</div><div class="unit">USD / 吨 · 以官方可用数据为准</div></section>
+<section class="card"><h2>LME 铜三个月（3M）</h2><div class="na">等待接入行情源</div><div class="unit">USD / 吨</div></section>
+<section class="card"><h2>SHFE 沪铜主力</h2><div class="na">等待接入行情源</div><div class="unit">CNY / 吨 · 期货</div></section>
+<section class="card"><h2>SHFE 沪铜近月</h2><div class="na">等待接入行情源</div><div class="unit">CNY / 吨 · 期货</div></section>
+<section class="card"><h2>SMM 1# 电解铜现货</h2><div class="na">等待接入行情源</div><div class="unit">CNY / 吨 · 现货</div></section>
+<section class="card"><h2>美元兑人民币</h2><div class="na">等待接入汇率源</div><div class="unit">USD / CNY</div></section>
+<section class="card wide"><h2>行情状态与数据说明</h2>
+<table><tr><th>项目</th><th>当前状态</th><th>说明</th></tr>
+<tr><td>LME</td><td>未接入</td><td>需确认可合法使用的免费延迟数据源</td></tr>
+<tr><td>SHFE</td><td>未接入</td><td>需确认公开行情接口及更新频率</td></tr>
+<tr><td>SMM</td><td>未接入</td><td>部分报价或接口可能需要授权</td></tr>
+<tr><td>汇率</td><td>未接入</td><td>接入来源后用于人民币折算</td></tr></table>
+</section>
+<section class="card wide"><h2>人民币折算与价差计算（可手动试算）</h2>
+<div class="grid">
+<div><label for="lme">LME 铜价（美元/吨）</label><input id="lme" type="number" inputmode="decimal" placeholder="输入 LME 价格"></div>
+<div><label for="fx">美元兑人民币</label><input id="fx" type="number" inputmode="decimal" step="0.0001" placeholder="输入汇率"></div>
+<div><label for="sh">上海铜价（人民币/吨）</label><input id="sh" type="number" inputmode="decimal" placeholder="输入上海价格"></div>
+</div>
+<button id="calc">计算折算价与价差</button>
+<div id="result" class="note" style="margin-top:12px">填写上方数据后点击计算。此处仅作换算，不代表实时行情。</div>
+</section>
+</div>
+<footer>
+重要提示：目前这是看板页面框架，尚未连接 LME、SMM、SHFE 或汇率数据源，因此不会显示或编造实时价格。页面每5分钟仅执行一次更新时间检查；只有接入稳定、获准使用的数据源后，才会自动更新报价。免费托管不等于免费获得实时行情。
+</footer>
+</main>
+<script>
+function tick(){document.getElementById('clock').textContent='本机时间：'+new Date().toLocaleString('zh-CN',{hour12:false});}
+tick();setInterval(tick,1000);
+setInterval(()=>{document.title='铜价行情看板 · '+new Date().toLocaleTimeString('zh-CN',{hour12:false});},300000);
+document.getElementById('calc').addEventListener('click',()=>{
+ const l=Number(document.getElementById('lme').value),f=Number(document.getElementById('fx').value),s=Number(document.getElementById('sh').value);
+ const out=document.getElementById('result');
+ if(!(l>0&&f>0&&s>0)){out.textContent='请填写三个大于0的有效数字。';return;}
+ const c=l*f,d=s-c,p=d/c*100;
+ out.innerHTML='LME折算人民币：<b>'+c.toLocaleString('zh-CN',{maximumFractionDigits:2})+' 元/吨</b><br>上海－LME折算价差：<b>'+d.toLocaleString('zh-CN',{maximumFractionDigits:2})+' 元/吨</b><br>价差比例：<b>'+p.toFixed(2)+'%</b>';
+});
+</script>
+</body>
+</html>
